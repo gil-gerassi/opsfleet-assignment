@@ -1,0 +1,36 @@
+# Forces pods onto Karpenter's "arm64" (Graviton) NodePool by matching the
+# kubernetes.io/arch label Karpenter sets on every node it launches.
+#
+# NOTE: nodeSelector only controls *placement* - it does not make your image
+# arm64-compatible. The image referenced here is a multi-arch (amd64+arm64)
+# manifest, so it works either way. If you swap in your own app image, make
+# sure it was built for linux/arm64 too (e.g. `docker buildx build
+# --platform linux/amd64,linux/arm64 ...`) or the pod will land on the node
+# and immediately crash with an exec format error.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-arm64
+  labels:
+    app: hello-arm64
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-arm64
+  template:
+    metadata:
+      labels:
+        app: hello-arm64
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: arm64
+      containers:
+        - name: hello
+          image: public.ecr.aws/nginx/nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
