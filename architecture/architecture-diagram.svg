@@ -1,0 +1,155 @@
+<svg viewBox="0 0 1500 1040" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#424242"/>
+    </marker>
+    <marker id="arrowDashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8d6e63"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1500" height="1040" fill="#ffffff"/>
+  <text x="750" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a1a1a">Innovate Inc. — AWS Production Architecture (High-Level Diagram)</text>
+
+  <!-- Users -->
+  <circle cx="750" cy="75" r="22" fill="#eceff1" stroke="#37474f" stroke-width="2"/>
+  <text x="750" y="80" text-anchor="middle" font-size="13" fill="#212121">Users</text>
+
+  <!-- Route53 -->
+  <rect x="660" y="115" width="180" height="46" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="750" y="136" text-anchor="middle" font-size="14" fill="#0d47a1">Route 53 (DNS)</text>
+  <text x="750" y="150" text-anchor="middle" font-size="9" fill="#0d47a1">(Shared Services acct)</text>
+
+  <!-- CloudFront + WAF -->
+  <rect x="600" y="180" width="300" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="750" y="201" text-anchor="middle" font-size="14" fill="#0d47a1">CloudFront (CDN) + AWS WAF</text>
+  <text x="750" y="219" text-anchor="middle" font-size="11" fill="#0d47a1">TLS via ACM · Shield Standard</text>
+  <text x="750" y="233" text-anchor="middle" font-size="9" fill="#0d47a1">(Production acct)</text>
+
+  <line x1="750" y1="97" x2="750" y2="113" stroke="#424242" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="750" y1="161" x2="750" y2="178" stroke="#424242" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- AWS Account boundary -->
+  <rect x="40" y="255" width="1420" height="723" rx="10" fill="none" stroke="#616161" stroke-width="2" stroke-dasharray="8,5"/>
+  <text x="60" y="280" font-size="14" font-weight="bold" fill="#424242">AWS Account: Production</text>
+
+  <!-- VPC boundary -->
+  <rect x="70" y="295" width="1020" height="670" rx="8" fill="#fafafa" stroke="#424242" stroke-width="2"/>
+  <text x="90" y="318" font-size="13" font-weight="bold" fill="#212121">VPC 10.1.0.0/16 — spans 3 Availability Zones</text>
+  <line x1="750" y1="240" x2="750" y2="293" stroke="#424242" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Public subnet band -->
+  <rect x="95" y="335" width="970" height="95" rx="6" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.5"/>
+  <text x="110" y="352" font-size="12" font-weight="bold" fill="#e65100">Public Subnets</text>
+
+  <rect x="650" y="365" width="200" height="48" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="750" y="393" text-anchor="middle" font-size="13" fill="#e65100">Application Load Balancer</text>
+
+  <rect x="890" y="365" width="150" height="48" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="965" y="386" text-anchor="middle" font-size="12" fill="#e65100">NAT Gateway</text>
+  <text x="965" y="401" text-anchor="middle" font-size="10" fill="#e65100">(single, shared at launch)</text>
+
+  <line x1="750" y1="413" x2="750" y2="432" stroke="#424242" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Private App subnet band (EKS) -->
+  <rect x="95" y="450" width="970" height="290" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="110" y="470" font-size="12" font-weight="bold" fill="#1b5e20">Private App Subnets</text>
+
+  <rect x="115" y="485" width="920" height="200" rx="8" fill="#ffffff" stroke="#1b5e20" stroke-width="2.5"/>
+  <text x="575" y="507" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">Amazon EKS Cluster</text>
+
+  <rect x="140" y="520" width="400" height="80" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="340" y="542" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">Frontend Pods</text>
+  <text x="340" y="558" text-anchor="middle" font-size="10.5" fill="#1b5e20">React (served via Nginx)</text>
+  <text x="340" y="573" text-anchor="middle" font-size="10.5" fill="#1b5e20">HPA on CPU/mem</text>
+  <text x="340" y="588" text-anchor="middle" font-size="10.5" fill="#1b5e20">spread across 3 AZs</text>
+
+  <rect x="610" y="520" width="400" height="80" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="810" y="542" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">Backend Pods</text>
+  <text x="810" y="558" text-anchor="middle" font-size="10.5" fill="#1b5e20">Flask REST API</text>
+  <text x="810" y="573" text-anchor="middle" font-size="10.5" fill="#1b5e20">KEDA: scales on request-rate</text>
+  <text x="810" y="588" text-anchor="middle" font-size="10.5" fill="#1b5e20">(faster signal than CPU)</text>
+
+  <line x1="340" y1="600" x2="340" y2="618" stroke="#616161" stroke-width="1.5"/>
+  <line x1="810" y1="600" x2="810" y2="618" stroke="#616161" stroke-width="1.5"/>
+  <rect x="140" y="618" width="870" height="42" rx="6" fill="#eef2e5" stroke="#33691e" stroke-width="1.5"/>
+  <text x="575" y="644" text-anchor="middle" font-size="12" fill="#33691e">Karpenter — node autoscaling (managed node group, min = 5 nodes floor, On-Demand + Spot, max sized for growth)</text>
+
+  <rect x="115" y="700" width="440" height="30" rx="5" fill="#ede7f6" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="335" y="720" text-anchor="middle" font-size="11" fill="#311b92">VPC Endpoints: S3 · ECR · Secrets Manager · KMS · CloudWatch Logs</text>
+
+  <line x1="575" y1="685" x2="575" y2="734" stroke="#424242" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Private Data subnet band -->
+  <rect x="95" y="755" width="970" height="130" rx="6" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="110" y="775" font-size="12" font-weight="bold" fill="#880e4f">Private Data Subnets — fully isolated (no internet route)</text>
+
+  <rect x="350" y="790" width="450" height="75" rx="8" fill="#ffffff" stroke="#880e4f" stroke-width="2.5"/>
+  <text x="575" y="812" text-anchor="middle" font-size="13" font-weight="bold" fill="#880e4f">Amazon Aurora PostgreSQL (Serverless v2)</text>
+  <text x="575" y="830" text-anchor="middle" font-size="11" fill="#880e4f">Multi-AZ: Writer + Reader · scales to 0 ACU when idle</text>
+  <text x="575" y="846" text-anchor="middle" font-size="11" fill="#880e4f">Continuous backups + PITR (35d) · KMS-encrypted</text>
+
+  <!-- Security / platform column -->
+  <rect x="1120" y="335" width="340" height="630" rx="8" fill="#ede7f6" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="358" text-anchor="middle" font-size="13" font-weight="bold" fill="#311b92">Security &amp; Platform Services</text>
+
+  <rect x="1145" y="375" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="394" text-anchor="middle" font-size="12" fill="#311b92">Secrets Manager (DB creds, rotated)</text>
+  <text x="1290" y="408" text-anchor="middle" font-size="10" fill="#311b92">(Production acct)</text>
+
+  <rect x="1145" y="427" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="446" text-anchor="middle" font-size="12" fill="#311b92">KMS (encryption at rest)</text>
+  <text x="1290" y="460" text-anchor="middle" font-size="10" fill="#311b92">(Production acct)</text>
+
+  <rect x="1145" y="479" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="498" text-anchor="middle" font-size="12" fill="#311b92">Amazon ECR (container images)</text>
+  <text x="1290" y="512" text-anchor="middle" font-size="10" fill="#311b92">in Shared Services acct, pulled cross-account</text>
+
+  <rect x="1145" y="531" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="550" text-anchor="middle" font-size="12" fill="#311b92">GuardDuty + Security Hub</text>
+  <text x="1290" y="564" text-anchor="middle" font-size="10" fill="#311b92">findings aggregate → Security/Audit acct</text>
+
+  <rect x="1145" y="583" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="602" text-anchor="middle" font-size="12" fill="#311b92">VPC Flow Logs</text>
+  <text x="1290" y="616" text-anchor="middle" font-size="10" fill="#311b92">→ Log Archive acct</text>
+
+  <rect x="1145" y="635" width="290" height="42" rx="6" fill="#ffffff" stroke="#4527a0" stroke-width="1.5"/>
+  <text x="1290" y="654" text-anchor="middle" font-size="12" fill="#311b92">CloudWatch (metrics, alarms)</text>
+  <text x="1290" y="668" text-anchor="middle" font-size="10" fill="#311b92">(Production acct)</text>
+
+  <text x="1290" y="710" text-anchor="middle" font-size="11" font-style="italic" fill="#4527a0">reached only via VPC Endpoints —</text>
+  <text x="1290" y="726" text-anchor="middle" font-size="11" font-style="italic" fill="#4527a0">no traffic over the public internet</text>
+
+  <!-- CI/CD strip -->
+  <rect x="1145" y="760" width="290" height="195" rx="8" fill="#eceff1" stroke="#37474f" stroke-width="1.5"/>
+  <text x="1290" y="782" text-anchor="middle" font-size="12" font-weight="bold" fill="#263238">CI/CD (GitOps)</text>
+
+  <rect x="1165" y="795" width="250" height="44" rx="5" fill="#ffffff" stroke="#37474f" stroke-width="1.2"/>
+  <text x="1290" y="814" text-anchor="middle" font-size="11" fill="#263238">GitHub Actions: build, test, scan</text>
+  <text x="1290" y="828" text-anchor="middle" font-size="9" fill="#263238">(external — not an AWS account)</text>
+
+  <line x1="1290" y1="839" x2="1290" y2="853" stroke="#424242" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="1165" y="853" width="250" height="30" rx="5" fill="#ffffff" stroke="#37474f" stroke-width="1.2"/>
+  <text x="1290" y="873" text-anchor="middle" font-size="11" fill="#263238">push image → ECR</text>
+
+  <line x1="1290" y1="883" x2="1290" y2="897" stroke="#424242" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="1165" y="897" width="250" height="30" rx="5" fill="#ffffff" stroke="#37474f" stroke-width="1.2"/>
+  <text x="1290" y="917" text-anchor="middle" font-size="11" fill="#263238">commit tag → Helm values.yaml</text>
+
+  <line x1="1290" y1="927" x2="1290" y2="941" stroke="#8d6e63" stroke-width="1.5" marker-end="url(#arrowDashed)"/>
+  <text x="1290" y="950" text-anchor="middle" font-size="9.5" fill="#5d4037">Argo CD syncs → EKS (Production acct)</text>
+
+  <path d="M1165,945 C 1060,945 1060,700 1037,560" fill="none" stroke="#8d6e63" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrowDashed)"/>
+
+  <!-- Legend -->
+  <rect x="70" y="985" width="18" height="14" fill="#fff3e0" stroke="#ef6c00"/>
+  <text x="95" y="997" font-size="11" fill="#424242">Public subnet</text>
+  <rect x="210" y="985" width="18" height="14" fill="#e8f5e9" stroke="#2e7d32"/>
+  <text x="235" y="997" font-size="11" fill="#424242">Private app subnet</text>
+  <rect x="380" y="985" width="18" height="14" fill="#fce4ec" stroke="#ad1457"/>
+  <text x="405" y="997" font-size="11" fill="#424242">Private data subnet (isolated)</text>
+  <rect x="620" y="985" width="18" height="14" fill="#ede7f6" stroke="#4527a0"/>
+  <text x="645" y="997" font-size="11" fill="#424242">Security &amp; platform services</text>
+</svg>
