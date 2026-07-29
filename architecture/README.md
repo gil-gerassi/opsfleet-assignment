@@ -3,7 +3,7 @@
 **Author:** [your name]
 **Date:** 2026-07-28
 **Cloud provider:** AWS
-**Status:** Draft — see [`communications/`](communications/) for the clarifying-questions message sent before this design and the delivery summary sent after.
+**Status:** Draft
 
 ## Contents
 
@@ -48,8 +48,6 @@
 - **Public** — ALB + a single shared NAT Gateway in all three environments at launch (cost-optimized). **Production alone** is the environment eligible to graduate to per-AZ NAT Gateways for outbound HA once justified (§7) — Dev/Staging never carry real user traffic, so that redundancy isn't worth ~3x the cost there, now or later.
 - **Private app** — EKS nodes/pods; outbound only via NAT or VPC endpoints.
 - **Private data** — Aurora only, no internet route in or out.
-
-![Innovate Inc. AWS production architecture — request path from users through Route 53, CloudFront, WAF, and the ALB into an EKS cluster (frontend pods, backend pods, KEDA autoscaling, Karpenter node autoscaling with a min=5 floor), through to an isolated Aurora PostgreSQL Serverless v2 database, alongside security/platform services (Secrets Manager, KMS, ECR, GuardDuty, Security Hub) and a GitOps CI/CD pipeline (GitHub Actions → ECR → Argo CD → EKS)](architecture-diagram.svg)
 
 **Securing the network:**
 - CloudFront + AWS WAF (managed rules) + Shield Standard at the edge; TLS via ACM everywhere.
@@ -111,7 +109,7 @@ Cost-effectiveness isn't a single line item — it's a constraint threaded throu
 
 ## 7. Assumptions
 
-Made explicit in lieu of a live requirements session; also sent as direct questions to the client (see [`communications/01-clarifying-questions.md`](communications/01-clarifying-questions.md)).
+Made explicit in lieu of a live requirements session with Innovate Inc.
 
 | Assumption | If wrong |
 |---|---|
@@ -122,5 +120,3 @@ Made explicit in lieu of a live requirements session; also sent as direct questi
 | Single shared NAT Gateway acceptable in Production at launch | Move Production to per-AZ NAT Gateways if outbound HA is a hard requirement from day one (Dev/Staging stay single-NAT regardless) |
 
 ---
-
-*See [`communications/`](communications/) for the clarifying-questions message sent before this design and the summary sent on delivery.*
