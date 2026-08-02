@@ -1,0 +1,179 @@
+<svg viewBox="0 0 1400 1070" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrowBlack" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#212121"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ef6c00"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6a1b9a"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#757575"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="1070" fill="#ffffff"/>
+  <text x="700" y="26" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a1a">Network Traffic Flow — VPC Design</text>
+  <text x="700" y="44" text-anchor="middle" font-size="11" fill="#555555">Representative of Production (per-AZ NAT Gateways). Dev/Staging share this topology except NAT — see note at bottom.</text>
+
+  <!-- Users / Internet -->
+  <circle cx="700" cy="80" r="18" fill="#eceff1" stroke="#37474f" stroke-width="2"/>
+  <text x="700" y="84" text-anchor="middle" font-size="9" fill="#212121">Users</text>
+  <line x1="700" y1="98" x2="700" y2="116" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+
+  <!-- Route 53 -->
+  <rect x="610" y="116" width="180" height="38" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="700" y="140" text-anchor="middle" font-size="12" fill="#0d47a1">Route 53 (DNS)</text>
+  <line x1="700" y1="154" x2="700" y2="170" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+
+  <!-- CloudFront + WAF -->
+  <rect x="560" y="170" width="280" height="50" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="700" y="191" text-anchor="middle" font-size="12" fill="#0d47a1">CloudFront (CDN) + AWS WAF</text>
+  <text x="700" y="207" text-anchor="middle" font-size="10" fill="#0d47a1">TLS via ACM · Shield Standard</text>
+  <line x1="700" y1="220" x2="700" y2="236" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+
+  <!-- Internet Gateway -->
+  <rect x="610" y="236" width="180" height="38" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="700" y="260" text-anchor="middle" font-size="12" fill="#0d47a1">Internet Gateway</text>
+  <line x1="700" y1="274" x2="700" y2="300" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+
+  <g transform="translate(0,124)">
+  <!-- VPC boundary -->
+  <rect x="50" y="176" width="1300" height="602" rx="10" fill="#fafafa" stroke="#424242" stroke-width="2"/>
+  <text x="65" y="195" font-size="13" font-weight="bold" fill="#212121">VPC 10.1.0.0/16 — 3 Availability Zones</text>
+
+  <!-- AZ dividers -->
+  <line x1="467" y1="208" x2="467" y2="755" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="872" y1="208" x2="872" y2="755" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="265" y="204" text-anchor="middle" font-size="11" font-style="italic" fill="#616161">Availability Zone A</text>
+  <text x="670" y="204" text-anchor="middle" font-size="11" font-style="italic" fill="#616161">Availability Zone B</text>
+  <text x="1075" y="204" text-anchor="middle" font-size="11" font-style="italic" fill="#616161">Availability Zone C</text>
+
+  <!-- Public subnet band -->
+  <rect x="70" y="215" width="1260" height="130" rx="6" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.5"/>
+  <text x="85" y="232" font-size="12" font-weight="bold" fill="#e65100">Public Subnets — one subnet per AZ (Production: ALB + NAT Gateway present in every AZ)</text>
+
+  <rect x="545" y="240" width="310" height="35" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="700" y="256" text-anchor="middle" font-size="11.5" fill="#e65100">Application Load Balancer</text>
+  <text x="700" y="269" text-anchor="middle" font-size="9.5" fill="#e65100">(target group spans all 3 AZs)</text>
+
+  <rect x="95" y="283" width="340" height="35" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="265" y="299" text-anchor="middle" font-size="11.5" fill="#e65100">NAT Gateway</text>
+  <text x="265" y="312" text-anchor="middle" font-size="9.5" fill="#e65100">(AZ-a)</text>
+
+  <rect x="500" y="283" width="340" height="35" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="670" y="299" text-anchor="middle" font-size="11.5" fill="#e65100">NAT Gateway</text>
+  <text x="670" y="312" text-anchor="middle" font-size="9.5" fill="#e65100">(AZ-b)</text>
+
+  <rect x="905" y="283" width="340" height="35" rx="6" fill="#ffffff" stroke="#ef6c00" stroke-width="2"/>
+  <text x="1075" y="299" text-anchor="middle" font-size="11.5" fill="#e65100">NAT Gateway</text>
+  <text x="1075" y="312" text-anchor="middle" font-size="9.5" fill="#e65100">(AZ-c)</text>
+
+  <!-- Private App subnet band -->
+  <rect x="70" y="355" width="1260" height="200" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="85" y="372" font-size="12" font-weight="bold" fill="#1b5e20">Private App Subnets (repeated per AZ) — EKS nodes/pods</text>
+
+  <rect x="95" y="395" width="340" height="140" rx="6" fill="#ffffff" stroke="#2e7d32" stroke-width="2"/>
+  <text x="265" y="412" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">EKS worker nodes</text>
+  <text x="265" y="426" text-anchor="middle" font-size="10" fill="#1b5e20">Karpenter: min=5 floor</text>
+  <rect x="115" y="434" width="300" height="26" rx="4" fill="#f1f8f1" stroke="#2e7d32" stroke-width="1"/>
+  <text x="265" y="451" text-anchor="middle" font-size="10.5" fill="#1b5e20">Frontend pods (React) — no DB access</text>
+  <rect x="115" y="465" width="300" height="26" rx="4" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="265" y="482" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#880e4f">Backend pods (Flask) — ↓ Aurora Writer only</text>
+  <text x="265" y="510" text-anchor="middle" font-size="9.5" fill="#1b5e20">KEDA / HPA autoscaling</text>
+
+  <rect x="500" y="395" width="340" height="140" rx="6" fill="#ffffff" stroke="#2e7d32" stroke-width="2"/>
+  <text x="670" y="412" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">EKS worker nodes (AZ-b)</text>
+  <rect x="520" y="434" width="300" height="26" rx="4" fill="#f1f8f1" stroke="#2e7d32" stroke-width="1"/>
+  <text x="670" y="451" text-anchor="middle" font-size="10.5" fill="#1b5e20">Frontend pods (React) — no DB access</text>
+  <rect x="520" y="465" width="300" height="26" rx="4" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="670" y="482" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#880e4f">Backend pods (Flask) — same pattern</text>
+  <text x="670" y="510" text-anchor="middle" font-size="9.5" fill="#1b5e20">as AZ-a (arrow omitted for clarity)</text>
+
+  <rect x="905" y="395" width="340" height="140" rx="6" fill="#ffffff" stroke="#2e7d32" stroke-width="2"/>
+  <text x="1075" y="412" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">EKS worker nodes (AZ-c)</text>
+  <rect x="925" y="434" width="300" height="26" rx="4" fill="#f1f8f1" stroke="#2e7d32" stroke-width="1"/>
+  <text x="1075" y="451" text-anchor="middle" font-size="10.5" fill="#1b5e20">Frontend pods (React) — no DB access</text>
+  <rect x="925" y="465" width="300" height="26" rx="4" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="1075" y="482" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#880e4f">Backend pods (Flask) — same pattern</text>
+  <text x="1075" y="510" text-anchor="middle" font-size="9.5" fill="#1b5e20">as AZ-a (arrow omitted for clarity)</text>
+
+  <!-- VPC Endpoints strip -->
+  <rect x="95" y="565" width="1180" height="40" rx="6" fill="#ede7f6" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="685" y="590" text-anchor="middle" font-size="11" fill="#4a148c">VPC Endpoints: S3 · ECR · Secrets Manager · KMS · CloudWatch Logs</text>
+
+  <!-- Private Data subnet band -->
+  <rect x="70" y="615" width="1260" height="140" rx="6" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="85" y="632" font-size="12" font-weight="bold" fill="#880e4f">Private Data Subnets — one subnet per AZ, fully isolated (DB instances are not repeated: Writer + Reader shown, 3rd AZ reserved)</text>
+
+  <rect x="95" y="655" width="340" height="80" rx="6" fill="#ffffff" stroke="#ad1457" stroke-width="2"/>
+  <text x="265" y="680" text-anchor="middle" font-size="12" font-weight="bold" fill="#880e4f">Aurora Writer</text>
+  <text x="265" y="696" text-anchor="middle" font-size="10" fill="#880e4f">(primary instance)</text>
+  <text x="265" y="710" text-anchor="middle" font-size="10" fill="#880e4f">AZ-a</text>
+
+  <rect x="500" y="655" width="340" height="80" rx="6" fill="#ffffff" stroke="#ad1457" stroke-width="2"/>
+  <text x="670" y="680" text-anchor="middle" font-size="12" font-weight="bold" fill="#880e4f">Aurora Reader</text>
+  <text x="670" y="696" text-anchor="middle" font-size="10" fill="#880e4f">(standby / failover target)</text>
+  <text x="670" y="710" text-anchor="middle" font-size="10" fill="#880e4f">AZ-b</text>
+
+  <text x="1075" y="690" text-anchor="middle" font-size="10" font-style="italic" fill="#880e4f">AZ-c data subnet</text>
+  <text x="1075" y="704" text-anchor="middle" font-size="10" font-style="italic" fill="#880e4f">(reserved for extra read replica)</text>
+
+  <!-- Traffic arrows -->
+  <!-- (1) Ingress: ALB -> EKS nodes -->
+  <path d="M700,275 C700,310 400,350 265,393" fill="none" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+  <line x1="700" y1="275" x2="700" y2="393" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+  <path d="M700,275 C700,310 1000,350 1075,393" fill="none" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+  <text x="700" y="333" text-anchor="middle" font-size="10" fill="#212121">① HTTPS (443) — SG-ALB → SG-App</text>
+
+  <!-- (3) NAT egress: each AZ's EKS nodes route to their own local NAT Gateway (Production: per-AZ) -->
+  <line x1="265" y1="393" x2="265" y2="320" stroke="#ef6c00" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <line x1="670" y1="393" x2="670" y2="320" stroke="#ef6c00" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <line x1="1075" y1="393" x2="1075" y2="320" stroke="#ef6c00" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="150" y="330" text-anchor="middle" font-size="10" fill="#e65100">③ NAT egress</text>
+  <text x="150" y="343" text-anchor="middle" font-size="10" fill="#e65100">(own AZ's NAT)</text>
+
+  <!-- NAT -> IGW -> Internet (representative — each AZ's NAT routes independently) -->
+  <path d="M265,283 C265,200 450,150 608,133" fill="none" stroke="#ef6c00" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#arrowOrange)"/>
+
+  <!-- (2) App -> DB: only backend pods, to the writer endpoint -->
+  <line x1="265" y1="535" x2="265" y2="653" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+  <text x="265" y="547" text-anchor="middle" font-size="9.5" fill="#212121">②</text>
+
+  <!-- Aurora-managed replication, not app traffic (line fits the 63px gap; label sits clear of both boxes, below) -->
+  <line x1="435" y1="695" x2="498" y2="695" stroke="#880e4f" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowGray)"/>
+  <line x1="467" y1="735" x2="467" y2="745" stroke="#880e4f" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="467" y="758" text-anchor="middle" font-size="9.5" fill="#880e4f">Aurora-managed replication (&lt;30s failover)</text>
+  <text x="467" y="771" text-anchor="middle" font-size="9.5" font-style="italic" fill="#616161">not app traffic — reader not queried by app yet</text>
+
+  <!-- (4) VPC Endpoint egress -->
+  <line x1="265" y1="535" x2="265" y2="563" stroke="#6a1b9a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowPurple)"/>
+  <line x1="1075" y1="535" x2="1075" y2="563" stroke="#6a1b9a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowPurple)"/>
+  <text x="265" y="552" text-anchor="middle" font-size="9.5" fill="#4a148c">④</text>
+  <text x="1075" y="552" text-anchor="middle" font-size="9.5" fill="#4a148c">④</text>
+
+  <!-- Legend -->
+  <rect x="70" y="800" width="18" height="14" fill="#fff3e0" stroke="#ef6c00"/>
+  <text x="95" y="812" font-size="11" fill="#424242">Public subnet</text>
+  <rect x="210" y="800" width="18" height="14" fill="#e8f5e9" stroke="#2e7d32"/>
+  <text x="235" y="812" font-size="11" fill="#424242">Private app subnet</text>
+  <rect x="380" y="800" width="18" height="14" fill="#fce4ec" stroke="#ad1457"/>
+  <text x="405" y="812" font-size="11" fill="#424242">Private data subnet (isolated)</text>
+  <rect x="620" y="800" width="18" height="14" fill="#ede7f6" stroke="#6a1b9a"/>
+  <text x="645" y="812" font-size="11" fill="#424242">VPC Endpoints</text>
+
+  <line x1="70" y1="833" x2="105" y2="833" stroke="#212121" stroke-width="2" marker-end="url(#arrowBlack)"/>
+  <text x="112" y="837" font-size="11" fill="#424242">① ② User / app / DB traffic (SG-restricted)</text>
+  <line x1="420" y1="833" x2="455" y2="833" stroke="#ef6c00" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="462" y="837" font-size="11" fill="#424242">③ Outbound internet via NAT (per-AZ)</text>
+  <line x1="720" y1="833" x2="755" y2="833" stroke="#6a1b9a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowPurple)"/>
+  <text x="762" y="837" font-size="11" fill="#424242">④ AWS service traffic — never leaves AWS network</text>
+
+  <text x="700" y="851" text-anchor="middle" font-size="11" fill="#616161">② Only backend pods reach Aurora — port 5432, writer endpoint only, SG-App(backend) → SG-DB. Frontend pods have no database access at all.</text>
+  <text x="700" y="868" text-anchor="middle" font-size="11" fill="#616161">All traffic on this diagram is captured by VPC Flow Logs, exported cross-account to the Log Archive account (README §1).</text>
+  <text x="700" y="885" text-anchor="middle" font-size="11" fill="#616161">The database subnet has no route to or from the internet under any circumstance — reachable only from SG-App on port 5432.</text>
+  <text x="700" y="902" text-anchor="middle" font-size="11" font-weight="bold" fill="#e65100">Dev and Staging differ here: a single shared NAT Gateway (not per-AZ) — cost-optimized, since neither carries real user traffic (README §2, §6).</text>
+  </g>
+</svg>
